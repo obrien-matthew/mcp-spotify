@@ -134,6 +134,22 @@ class SpotifyClient:
         except SpotifyException as e:
             self._handle_error(e, "removing tracks from playlist")
 
+    def replace_playlist_tracks(
+        self, playlist_id: str, track_ids: list[str]
+    ) -> None:
+        """Replace all tracks in a playlist with the given list, in order."""
+        playlist_id = extract_id(playlist_id)
+        track_uris = [f"spotify:track:{extract_id(t)}" for t in track_ids]
+        try:
+            # playlist_replace_items only accepts up to 100 URIs
+            self._sp.playlist_replace_items(playlist_id, track_uris[:100])
+            # Add remaining tracks in batches of 100
+            for i in range(100, len(track_uris), 100):
+                batch = track_uris[i : i + 100]
+                self._sp.playlist_add_items(playlist_id, batch)
+        except SpotifyException as e:
+            self._handle_error(e, "replacing playlist tracks")
+
     def get_playlist_tracks(
         self, playlist_id: str, limit: int = 50, offset: int = 0
     ) -> dict:

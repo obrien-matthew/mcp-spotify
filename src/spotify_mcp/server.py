@@ -123,6 +123,25 @@ def remove_tracks_from_playlist(
 
 
 @mcp.tool()
+def replace_playlist_tracks(playlist_id: str, track_ids: list[str]) -> str:
+    """Replace all tracks in a playlist with the given list, in order.
+
+    This is useful for reordering a playlist. First get the current tracks
+    with get_playlist_tracks, reorder the IDs as desired, then pass the
+    full ordered list here. The playlist will contain exactly these tracks
+    in exactly this order.
+
+    Accepts track IDs or URIs. No limit on total tracks (batched internally).
+    """
+    try:
+        _get_client().replace_playlist_tracks(playlist_id, track_ids)
+        count = len(track_ids)
+        return f"Replaced playlist with {count} tracks in the specified order."
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
 def get_playlist_tracks(
     playlist_id: str, limit: int = 50, offset: int = 0
 ) -> str:
