@@ -126,11 +126,11 @@ class SpotifyClient:
             results = self._sp.playlist_items(
                 playlist_id, limit=limit, offset=offset
             )
-            tracks = [
-                item["track"]
-                for item in results.get("items", [])
-                if item.get("track")
-            ]
+            tracks = []
+            for entry in results.get("items", []):
+                track = entry.get("item") or entry.get("track")
+                if isinstance(track, dict):
+                    tracks.append(track)
             return {
                 "tracks": format_track_list(tracks, include_album=True),
                 "total": results.get("total", 0),

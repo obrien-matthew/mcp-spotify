@@ -37,13 +37,22 @@ def format_artist_list(artists: list[dict]) -> list[dict]:
     return [format_artist(a) for a in artists if a]
 
 
+def _get_playlist_total(playlist: dict) -> int:
+    """Extract track count from either 'tracks' or 'items' key."""
+    for key in ("tracks", "items"):
+        val = playlist.get(key)
+        if isinstance(val, dict) and "total" in val:
+            return val["total"]
+    return 0
+
+
 def format_playlist(playlist: dict) -> dict:
     result: dict = {
         "name": playlist["name"],
         "id": playlist["id"],
         "uri": playlist["uri"],
         "owner": playlist.get("owner", {}).get("display_name", "unknown"),
-        "total_tracks": playlist.get("tracks", {}).get("total", 0),
+        "total_tracks": _get_playlist_total(playlist),
         "public": playlist.get("public"),
     }
     if playlist.get("description"):
