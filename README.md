@@ -15,8 +15,9 @@ MCP server for Spotify, focused on playlist building and music discovery. 12 gra
 
 1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
 2. Click **Create App**
-3. Set the **Redirect URI** to `http://127.0.0.1:8888/callback`
-4. Note your **Client ID** and **Client Secret**
+3. Under **Which API/SDKs are you planning to use?**, select **Web API**
+4. Set the **Redirect URI** to `http://127.0.0.1:8888/callback`
+5. Note your **Client ID** and **Client Secret**
 
 ### 2. Install
 
