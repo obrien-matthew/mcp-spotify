@@ -70,8 +70,10 @@ Add to your MCP server config:
 | Tool | Parameters | Description |
 |------|-----------|-------------|
 | `search_tracks` | `query`, `limit=20` | Search for tracks. Supports `genre:`, `year:`, `artist:` filters. |
-| `get_artist_top_tracks` | `artist_id` | Get top tracks for an artist (up to 10). |
-| `get_related_artists` | `artist_id` | Get similar artists (up to 20) with genres. |
+| `get_artist_top_tracks` | `artist_id` | Get top tracks for an artist (up to 10). *Requires extended quota.* |
+| `get_related_artists` | `artist_id` | Get similar artists (up to 20) with genres. *Requires extended quota.* |
+
+> **Note:** `get_artist_top_tracks` and `get_related_artists` require your Spotify app to have extended quota access. Development Mode apps will get 403 errors on these endpoints. See `docs/action-items/002-apply-for-extended-quota.md` for how to apply.
 
 ### Playlists
 
