@@ -1,0 +1,20 @@
+[project]
+name = "spotify-mcp"
+version = "0.1.0"
+description = "MCP server for Spotify playlist building and playback control"
+readme = "README.md"
+authors = [
+    { name = "Matthew O'Brien", email = "obrien.mlotwis@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "mcp>=1.27.0,<2",
+    "spotipy>=2.24.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.3,<0.12.0"]
+build-backend = "uv_build"
+
+[project.scripts]
+spotify-mcp = "spotify_mcp:main"
