@@ -18,9 +18,7 @@ def format_track(track: dict, include_album: bool = False) -> dict:
     return result
 
 
-def format_track_list(
-    tracks: list[dict], include_album: bool = False
-) -> list[dict]:
+def format_track_list(tracks: list[dict], include_album: bool = False) -> list[dict]:
     return [format_track(t, include_album) for t in tracks if t]
 
 

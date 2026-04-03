@@ -7,19 +7,21 @@ from pathlib import Path
 import spotipy
 from spotipy.oauth2 import CacheFileHandler, SpotifyOAuth
 
-SCOPES = " ".join([
-    # Playback
-    "user-read-playback-state",
-    "user-modify-playback-state",
-    "user-read-currently-playing",
-    # Playlists
-    "playlist-read-private",
-    "playlist-read-collaborative",
-    "playlist-modify-public",
-    "playlist-modify-private",
-    # Personalization
-    "user-top-read",
-])
+SCOPES = " ".join(
+    [
+        # Playback
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "user-read-currently-playing",
+        # Playlists
+        "playlist-read-private",
+        "playlist-read-collaborative",
+        "playlist-modify-public",
+        "playlist-modify-private",
+        # Personalization
+        "user-top-read",
+    ]
+)
 
 _client: spotipy.Spotify | None = None
 

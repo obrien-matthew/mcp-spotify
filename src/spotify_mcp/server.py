@@ -48,9 +48,7 @@ def search_tracks(query: str, limit: int = 20) -> str:
 
 
 @mcp.tool()
-def create_playlist(
-    name: str, description: str = "", public: bool = True
-) -> str:
+def create_playlist(name: str, description: str = "", public: bool = True) -> str:
     """Create a new Spotify playlist for the current user.
 
     Returns the playlist ID and URI for use with other playlist tools.
@@ -78,9 +76,7 @@ def add_tracks_to_playlist(playlist_id: str, track_ids: list[str]) -> str:
 
 
 @mcp.tool()
-def remove_tracks_from_playlist(
-    playlist_id: str, track_ids: list[str]
-) -> str:
+def remove_tracks_from_playlist(playlist_id: str, track_ids: list[str]) -> str:
     """Remove tracks from a Spotify playlist.
 
     Removes all occurrences of each track. Accepts track IDs or URIs
@@ -114,9 +110,7 @@ def replace_playlist_tracks(playlist_id: str, track_ids: list[str]) -> str:
 
 
 @mcp.tool()
-def get_playlist_tracks(
-    playlist_id: str, limit: int = 50, offset: int = 0
-) -> str:
+def get_playlist_tracks(playlist_id: str, limit: int = 50, offset: int = 0) -> str:
     """Get the tracks in a Spotify playlist.
 
     Supports pagination via limit (max 100) and offset. Returns track
@@ -148,9 +142,7 @@ def get_my_playlists(limit: int = 50) -> str:
 
 
 @mcp.tool()
-def get_my_top_tracks(
-    time_range: str = "medium_term", limit: int = 20
-) -> str:
+def get_my_top_tracks(time_range: str = "medium_term", limit: int = 20) -> str:
     """Get the current user's top tracks on Spotify.
 
     time_range options:
@@ -168,9 +160,7 @@ def get_my_top_tracks(
 
 
 @mcp.tool()
-def get_my_top_artists(
-    time_range: str = "medium_term", limit: int = 20
-) -> str:
+def get_my_top_artists(time_range: str = "medium_term", limit: int = 20) -> str:
     """Get the current user's top artists on Spotify.
 
     time_range options:
