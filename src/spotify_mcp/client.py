@@ -59,22 +59,6 @@ class SpotifyClient:
         except SpotifyException as e:
             self._handle_error(e, "searching tracks")
 
-    def get_artist_top_tracks(self, artist_id: str) -> list[dict]:
-        artist_id = extract_id(artist_id)
-        try:
-            results = self._sp.artist_top_tracks(artist_id)
-            return format_track_list(results["tracks"], include_album=True)
-        except SpotifyException as e:
-            self._handle_error(e, "fetching artist top tracks")
-
-    def get_related_artists(self, artist_id: str) -> list[dict]:
-        artist_id = extract_id(artist_id)
-        try:
-            results = self._sp.artist_related_artists(artist_id)
-            return format_artist_list(results["artists"])
-        except SpotifyException as e:
-            self._handle_error(e, "fetching related artists")
-
     # -- Playlists --
 
     def create_playlist(

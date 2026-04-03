@@ -42,34 +42,6 @@ def search_tracks(query: str, limit: int = 20) -> str:
         return f"Error: {e}"
 
 
-@mcp.tool()
-def get_artist_top_tracks(artist_id: str) -> str:
-    """Get the top tracks for a Spotify artist.
-
-    Accepts a Spotify artist ID (22-char alphanumeric) or full URI
-    (spotify:artist:<id>). Returns up to 10 tracks with album info.
-    """
-    try:
-        results = _get_client().get_artist_top_tracks(artist_id)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
-
-
-@mcp.tool()
-def get_related_artists(artist_id: str) -> str:
-    """Get artists similar to a given artist.
-
-    Useful for music discovery when building playlists. Accepts a Spotify
-    artist ID or full URI. Returns up to 20 related artists with genres.
-    """
-    try:
-        results = _get_client().get_related_artists(artist_id)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
-
-
 # ---------------------------------------------------------------------------
 # Playlists
 # ---------------------------------------------------------------------------

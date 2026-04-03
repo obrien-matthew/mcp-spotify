@@ -1,6 +1,6 @@
 # mcp-spotify
 
-MCP server for Spotify, focused on playlist building and music discovery. 14 granular tools designed for use with Claude and other LLM agents.
+MCP server for Spotify, focused on playlist building and music discovery. 12 granular tools designed for use with Claude and other LLM agents.
 
 ## Prerequisites
 
@@ -88,10 +88,6 @@ Or if running from a local clone:
 | Tool | Parameters | Description |
 |------|-----------|-------------|
 | `search_tracks` | `query`, `limit=20` | Search for tracks. Supports `genre:`, `year:`, `artist:` filters. |
-| `get_artist_top_tracks` | `artist_id` | Get top tracks for an artist (up to 10). *Requires extended quota.* |
-| `get_related_artists` | `artist_id` | Get similar artists (up to 20) with genres. *Requires extended quota.* |
-
-> **Note:** `get_artist_top_tracks` and `get_related_artists` require your Spotify app to have extended quota access. Development Mode apps will get 403 errors on these endpoints. See `docs/action-items/002-apply-for-extended-quota.md` for how to apply.
 
 ### Playlists
 
@@ -158,12 +154,10 @@ These endpoints exist but return **403 Forbidden** in Development Mode. They req
 
 This makes Extended Quota **inaccessible for personal projects, hobby apps, and small tools**.
 
-| Tool in This Server | Endpoint | Status |
-|---------------------|----------|--------|
-| `get_related_artists` | `GET /artists/{id}/related-artists` | Returns 403. No workaround. |
-| `get_artist_top_tracks` | `GET /artists/{id}/top-tracks` | Returns 403. No workaround. |
-
-These tools remain in the codebase in case Spotify loosens restrictions in the future, but they are non-functional for Development Mode apps.
+| Endpoint | What It Did |
+|----------|-------------|
+| `GET /artists/{id}/related-artists` | Discover similar artists. Returns 403. |
+| `GET /artists/{id}/top-tracks` | Get an artist's most popular tracks. Returns 403. |
 
 ### February 2026 Development Mode Changes
 
