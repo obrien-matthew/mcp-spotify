@@ -213,5 +213,15 @@ The practical effect: playlist building relies entirely on `search_tracks` and t
 
 ```bash
 uv run mcp-spotify           # Run the server
-uv run python -m pytest      # Run tests (when added)
+uv run ruff check src/       # Lint
+uv run ruff format src/      # Format
+uv run pyright src/          # Type check
+```
+
+### Pre-commit Hooks
+
+This project uses [lefthook](https://github.com/evilmartians/lefthook) for pre-commit checks. Install with `brew install lefthook` (or see [other install methods](https://github.com/evilmartians/lefthook/blob/master/docs/install.md)), then:
+
+```bash
+lefthook install
 ```
