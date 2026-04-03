@@ -1,4 +1,4 @@
-"""MCP server with 13 Spotify tools for playlist building and playback."""
+"""MCP server with Spotify tools for playlist building and playback."""
 
 import json
 
