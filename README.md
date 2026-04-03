@@ -6,7 +6,7 @@ MCP server for Spotify, focused on playlist building and music discovery. 14 gra
 
 - Python 3.14+
 - [uv](https://docs.astral.sh/uv/)
-- A Spotify account (free or Premium -- playback control tools require Premium)
+- A Spotify Premium account (required by Spotify for Web API access)
 - A [Spotify Developer](https://developer.spotify.com/) application
 
 ## Setup
@@ -169,7 +169,7 @@ These tools remain in the codebase in case Spotify loosens restrictions in the f
 
 On February 6, 2026, Spotify overhauled Development Mode itself:
 
-- **Spotify Premium required** for app owners
+- **Spotify Premium required** for app owners (this is now a prerequisite for all Web API access)
 - **1 Client ID per developer**
 - **Max 5 authorized users** per app
 - **Search results capped at 10** per request (down from 50) for new apps
