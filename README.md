@@ -6,7 +6,7 @@ MCP server for Spotify, focused on playlist building and music discovery. 14 gra
 
 - Python 3.14+
 - [uv](https://docs.astral.sh/uv/)
-- A Spotify account (free or premium)
+- A Spotify account (free or Premium -- playback control tools require Premium)
 - A [Spotify Developer](https://developer.spotify.com/) application
 
 ## Setup

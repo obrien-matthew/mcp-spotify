@@ -1,47 +1,37 @@
-# Apply for Spotify Extended Quota Access
+# Extended Quota Access (Spotify Web API)
 
-Development Mode apps are restricted from several API endpoints that this MCP server uses for music discovery. Without extended quota, the following tools return 403 Forbidden:
+## Status: Effectively Inaccessible for Personal Projects
 
-- `get_artist_top_tracks`
-- `get_related_artists`
+As of May 2025, Spotify's Extended Quota Mode requires:
 
-These are the primary discovery tools for building playlists (finding new music based on artists you like). Without them, playlist building is limited to `search_tracks` and your personal top tracks/artists.
+- A **legally registered business entity** (not individuals)
+- **250,000+ monthly active users**
+- An active, launched service in key Spotify markets
+- Review process takes up to 6 weeks
 
-## Steps
+This makes Extended Quota inaccessible for personal projects, hobby apps, and small tools.
 
-1. **Go to the Spotify Developer Dashboard**
-   - Visit https://developer.spotify.com/dashboard
-   - Select your app
+## What's Gated
 
-2. **Request Extended Quota**
-   - Look for a **Request Extension** or **Extended Quota Mode** option in your app settings
-   - Spotify's process has changed over time -- if you don't see it directly, check under **Settings** or **App Status**
+These tools in this MCP server require Extended Quota and return **403 Forbidden** in Development Mode:
 
-3. **Fill Out the Application**
-   - **App description**: Describe the MCP server -- e.g., "A Model Context Protocol server that enables AI assistants to build and manage Spotify playlists through natural language conversation."
-   - **Which endpoints do you need?**: At minimum:
-     - `Get Artist's Top Tracks` (`/v1/artists/{id}/top-tracks`)
-     - `Get Artist's Related Artists` (`/v1/artists/{id}/related-artists`)
-   - **Use case**: Personal tool for AI-assisted playlist curation
-   - **Expected user count**: 1 (personal use)
+- `get_artist_top_tracks` -- `GET /artists/{id}/top-tracks`
+- `get_related_artists` -- `GET /artists/{id}/related-artists`
 
-4. **Wait for Approval**
-   - Spotify reviews applications manually
-   - Approval can take days to weeks depending on the queue
-   - You'll get an email when approved
+The tools remain in the codebase in case Spotify loosens restrictions, but they are non-functional for Development Mode apps.
 
-5. **After Approval**
-   - Delete the cached token: `rm ~/.spotify_mcp_cache`
-   - Reconnect the MCP server -- the new token will have access to the extended endpoints
+## Workarounds
 
-## Workaround While Waiting
+Without these endpoints, playlist building relies on:
 
-Without these endpoints, you can still build playlists using:
 - `search_tracks` with Spotify's query syntax (`genre:rock`, `year:2020-2024`, `artist:radiohead`)
 - `get_my_top_tracks` and `get_my_top_artists` as starting points
-- Iterative search -- ask Claude to search for tracks by artists similar to ones you like
+- The LLM's own music knowledge to suggest artists and tracks by name
 
-## Notes
+## Timeline
 
-- As of late 2024, Spotify tightened API access significantly. Extended quota is now required for many endpoints that were previously open.
-- The deprecated `recommendations` endpoint is not available even with extended quota (unless your app had access before November 2024).
+- **November 2024**: Spotify restricted many endpoints to Extended Quota only
+- **May 2025**: Extended Quota criteria raised to 250k MAU + registered business
+- **February 2026**: Further Development Mode restrictions (Premium required, search cap reduced)
+
+See the [Spotify Web API Restrictions](../../README.md#spotify-web-api-restrictions) section in the README for full details.

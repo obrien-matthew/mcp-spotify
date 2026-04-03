@@ -13,5 +13,8 @@ wheels/
 .env
 .spotify_cache
 
+# Claude Code
+.claude/
+
 # OS
 .DS_Store
