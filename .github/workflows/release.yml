@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    environment:
+      name: pypi
+      url: https://pypi.org/project/mcp-spotify/${{ steps.bump.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - run: uv python install 3.14
+
+      - name: Bump patch version
+        id: bump
+        run: |
+          current=$(grep '^version' pyproject.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+          IFS='.' read -r major minor patch <<< "$current"
+          new_version="${major}.${minor}.$((patch + 1))"
+          sed -i "s/^version = \".*\"/version = \"${new_version}\"/" pyproject.toml
+          echo "version=${new_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version bump
+        env:
+          NEW_VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "chore: bump version to ${NEW_VERSION} [skip ci]"
+          git push
+
+      - name: Build
+        run: uv build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

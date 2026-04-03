@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# Build artifacts
+dist/
+
 # Virtual environments
 .venv
 

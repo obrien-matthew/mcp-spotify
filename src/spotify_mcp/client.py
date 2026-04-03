@@ -1,6 +1,7 @@
 """Thin wrapper over spotipy with input validation and clean error handling."""
 
 import sys
+from typing import NoReturn
 
 from spotipy.exceptions import SpotifyException
 
@@ -34,10 +35,13 @@ class SpotifyClient:
     @property
     def user_id(self) -> str:
         if self._user_id is None:
-            self._user_id = self._sp.current_user()["id"]
+            user = self._sp.current_user()
+            if user is None:
+                raise SpotifyError("Failed to fetch current user")
+            self._user_id = str(user["id"])
         return self._user_id
 
-    def _handle_error(self, e: SpotifyException, action: str) -> None:
+    def _handle_error(self, e: SpotifyException, action: str) -> NoReturn:
         msg = f"Spotify API error while {action}"
         if e.http_status == 404:
             msg = f"Not found while {action}"
@@ -54,6 +58,8 @@ class SpotifyClient:
         limit = validate_limit(limit)
         try:
             results = self._sp.search(q=query, type="track", limit=limit)
+            if results is None:
+                return []
             tracks = results["tracks"]["items"]
             return format_track_list(tracks, include_album=True)
         except SpotifyException as e:
@@ -72,6 +78,8 @@ class SpotifyClient:
             # endpoint is blocked for Development Mode apps.
             import requests
 
+            if self._sp.auth_manager is None:
+                raise SpotifyError("No auth manager configured")
             token = self._sp.auth_manager.get_access_token(as_dict=False)
             resp = requests.post(
                 "https://api.spotify.com/v1/me/playlists",
@@ -96,9 +104,7 @@ class SpotifyClient:
         except Exception as e:
             raise SpotifyError(f"Failed to create playlist: {e}") from e
 
-    def add_tracks_to_playlist(
-        self, playlist_id: str, track_ids: list[str]
-    ) -> None:
+    def add_tracks_to_playlist(self, playlist_id: str, track_ids: list[str]) -> None:
         playlist_id = extract_id(playlist_id)
         track_uris = [f"spotify:track:{extract_id(t)}" for t in track_ids]
         try:
@@ -112,15 +118,11 @@ class SpotifyClient:
         playlist_id = extract_id(playlist_id)
         track_uris = [f"spotify:track:{extract_id(t)}" for t in track_ids]
         try:
-            self._sp.playlist_remove_all_occurrences_of_items(
-                playlist_id, track_uris
-            )
+            self._sp.playlist_remove_all_occurrences_of_items(playlist_id, track_uris)
         except SpotifyException as e:
             self._handle_error(e, "removing tracks from playlist")
 
-    def replace_playlist_tracks(
-        self, playlist_id: str, track_ids: list[str]
-    ) -> None:
+    def replace_playlist_tracks(self, playlist_id: str, track_ids: list[str]) -> None:
         """Replace all tracks in a playlist with the given list, in order."""
         playlist_id = extract_id(playlist_id)
         track_uris = [f"spotify:track:{extract_id(t)}" for t in track_ids]
@@ -141,9 +143,9 @@ class SpotifyClient:
         limit = validate_limit(limit, max_val=100)
         offset = validate_offset(offset)
         try:
-            results = self._sp.playlist_items(
-                playlist_id, limit=limit, offset=offset
-            )
+            results = self._sp.playlist_items(playlist_id, limit=limit, offset=offset)
+            if results is None:
+                return {"tracks": [], "total": 0, "offset": offset, "limit": limit}
             tracks = []
             for entry in results.get("items", []):
                 track = entry.get("item") or entry.get("track")
@@ -162,6 +164,8 @@ class SpotifyClient:
         limit = validate_limit(limit)
         try:
             results = self._sp.current_user_playlists(limit=limit)
+            if results is None:
+                return []
             return format_playlist_list(results.get("items", []))
         except SpotifyException as e:
             self._handle_error(e, "fetching playlists")
@@ -181,6 +185,8 @@ class SpotifyClient:
             results = self._sp.current_user_top_tracks(
                 time_range=time_range, limit=limit
             )
+            if results is None:
+                return []
             return format_track_list(results.get("items", []), include_album=True)
         except SpotifyException as e:
             self._handle_error(e, "fetching top tracks")
@@ -198,6 +204,8 @@ class SpotifyClient:
             results = self._sp.current_user_top_artists(
                 time_range=time_range, limit=limit
             )
+            if results is None:
+                return []
             return format_artist_list(results.get("items", []))
         except SpotifyException as e:
             self._handle_error(e, "fetching top artists")

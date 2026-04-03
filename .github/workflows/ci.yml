@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - run: uv python install 3.14
+
+      - run: uv sync --frozen
+
+      - name: Ruff lint
+        run: uv run ruff check src/
+
+      - name: Ruff format
+        run: uv run ruff format --check src/
+
+      - name: Pyright
+        run: uv run pyright src/
