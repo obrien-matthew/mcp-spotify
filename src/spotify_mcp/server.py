@@ -6,7 +6,7 @@ from mcp.server.fastmcp import FastMCP
 
 from .client import SpotifyClient, SpotifyError
 
-mcp = FastMCP("spotify-mcp")
+mcp = FastMCP("mcp-spotify")
 
 _client: SpotifyClient | None = None
 

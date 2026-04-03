@@ -1,5 +1,5 @@
 [project]
-name = "spotify-mcp"
+name = "mcp-spotify"
 version = "0.1.0"
 description = "MCP server for Spotify playlist building and playback control"
 readme = "README.md"
@@ -22,12 +22,15 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/obrien-matthew/spotify-mcp"
-Issues = "https://github.com/obrien-matthew/spotify-mcp/issues"
+Repository = "https://github.com/obrien-matthew/mcp-spotify"
+Issues = "https://github.com/obrien-matthew/mcp-spotify/issues"
+
+[tool.uv.build-backend]
+module-name = "spotify_mcp"
 
 [build-system]
 requires = ["uv_build>=0.11.3,<0.12.0"]
 build-backend = "uv_build"
 
 [project.scripts]
-spotify-mcp = "spotify_mcp:main"
+mcp-spotify = "spotify_mcp:main"

@@ -1,4 +1,4 @@
-# spotify-mcp
+# mcp-spotify
 
 MCP server for Spotify, focused on playlist building and music discovery. 14 granular tools designed for use with Claude and other LLM agents.
 
@@ -21,7 +21,7 @@ MCP server for Spotify, focused on playlist building and music discovery. 14 gra
 ### 2. Install
 
 ```bash
-cd spotify-mcp
+cd mcp-spotify
 uv sync
 ```
 
@@ -38,21 +38,39 @@ export SPOTIFY_REDIRECT_URI="http://127.0.0.1:8888/callback"
 ### 4. First Run (Authentication)
 
 ```bash
-uv run spotify-mcp
+uv run mcp-spotify
 ```
 
 On first run, a browser window opens for Spotify OAuth authorization. After approving, the token is cached at `~/.spotify_mcp_cache` and subsequent runs authenticate automatically.
 
 ## Claude Desktop / Claude Code Configuration
 
-Add to your MCP server config:
+Add to your MCP server config. If installed from PyPI:
+
+```json
+{
+  "mcpServers": {
+    "spotify": {
+      "command": "uvx",
+      "args": ["mcp-spotify"],
+      "env": {
+        "SPOTIFY_CLIENT_ID": "your_client_id",
+        "SPOTIFY_CLIENT_SECRET": "your_client_secret",
+        "SPOTIFY_REDIRECT_URI": "http://127.0.0.1:8888/callback"
+      }
+    }
+  }
+}
+```
+
+Or if running from a local clone:
 
 ```json
 {
   "mcpServers": {
     "spotify": {
       "command": "uv",
-      "args": ["--directory", "/path/to/spotify-mcp", "run", "spotify-mcp"],
+      "args": ["--directory", "/path/to/mcp-spotify", "run", "mcp-spotify"],
       "env": {
         "SPOTIFY_CLIENT_ID": "your_client_id",
         "SPOTIFY_CLIENT_SECRET": "your_client_secret",
@@ -199,6 +217,6 @@ The practical effect: playlist building relies entirely on `search_tracks` and t
 ## Development
 
 ```bash
-uv run spotify-mcp          # Run the server
+uv run mcp-spotify           # Run the server
 uv run python -m pytest      # Run tests (when added)
 ```
