@@ -84,15 +84,33 @@ class SpotifyClient:
         public: bool = True,
     ) -> dict:
         try:
-            result = self._sp.user_playlist_create(
-                user=self.user_id,
-                name=name,
-                public=public,
-                description=description,
+            # Use /me/playlists endpoint directly -- the /users/{id}/playlists
+            # endpoint is blocked for Development Mode apps.
+            import requests
+
+            token = self._sp.auth_manager.get_access_token(as_dict=False)
+            resp = requests.post(
+                "https://api.spotify.com/v1/me/playlists",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "name": name,
+                    "public": public,
+                    "description": description,
+                },
             )
-            return format_playlist(result)
-        except SpotifyException as e:
-            self._handle_error(e, "creating playlist")
+            if resp.status_code != 201:
+                raise SpotifyError(
+                    f"Failed to create playlist (HTTP {resp.status_code})",
+                    resp.status_code,
+                )
+            return format_playlist(resp.json())
+        except SpotifyError:
+            raise
+        except Exception as e:
+            raise SpotifyError(f"Failed to create playlist: {e}") from e
 
     def add_tracks_to_playlist(
         self, playlist_id: str, track_ids: list[str]
