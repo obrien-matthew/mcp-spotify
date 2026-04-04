@@ -35,6 +35,22 @@ def format_artist_list(artists: list[dict]) -> list[dict]:
     return [format_artist(a) for a in artists if a]
 
 
+def format_album(album: dict) -> dict:
+    artists = ", ".join(a["name"] for a in album.get("artists", []))
+    return {
+        "name": album["name"],
+        "id": album["id"],
+        "uri": album["uri"],
+        "artists": artists,
+        "release_date": album.get("release_date"),
+        "total_tracks": album.get("total_tracks"),
+    }
+
+
+def format_album_list(albums: list[dict]) -> list[dict]:
+    return [format_album(a) for a in albums if a]
+
+
 def _get_playlist_total(playlist: dict) -> int:
     """Extract track count from either 'tracks' or 'items' key."""
     for key in ("tracks", "items"):

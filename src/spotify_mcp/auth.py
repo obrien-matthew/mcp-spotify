@@ -20,6 +20,8 @@ SCOPES = " ".join(
         "playlist-modify-private",
         # Personalization
         "user-top-read",
+        # Library
+        "user-library-read",
     ]
 )
 

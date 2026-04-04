@@ -7,6 +7,7 @@ from spotipy.exceptions import SpotifyException
 
 from .auth import get_spotify_client
 from .formatting import (
+    format_album_list,
     format_artist_list,
     format_now_playing,
     format_playlist,
@@ -64,6 +65,63 @@ class SpotifyClient:
             return format_track_list(tracks, include_album=True)
         except SpotifyException as e:
             self._handle_error(e, "searching tracks")
+
+    def search_artists(self, query: str, limit: int = 20) -> list[dict]:
+        limit = validate_limit(limit)
+        try:
+            results = self._sp.search(q=query, type="artist", limit=limit)
+            if results is None:
+                return []
+            artists = results["artists"]["items"]
+            return format_artist_list(artists)
+        except SpotifyException as e:
+            self._handle_error(e, "searching artists")
+
+    def search_albums(self, query: str, limit: int = 20) -> list[dict]:
+        limit = validate_limit(limit)
+        try:
+            results = self._sp.search(q=query, type="album", limit=limit)
+            if results is None:
+                return []
+            albums = results["albums"]["items"]
+            return format_album_list(albums)
+        except SpotifyException as e:
+            self._handle_error(e, "searching albums")
+
+    def get_album_tracks(self, album_id: str, limit: int = 50) -> dict:
+        album_id = extract_id(album_id)
+        limit = validate_limit(limit)
+        try:
+            results = self._sp.album_tracks(album_id, limit=limit)
+            if results is None:
+                return {"tracks": [], "total": 0}
+            return {
+                "tracks": format_track_list(results.get("items", [])),
+                "total": results.get("total", 0),
+            }
+        except SpotifyException as e:
+            self._handle_error(e, "fetching album tracks")
+
+    # -- Library --
+
+    def get_saved_tracks(self, limit: int = 20, offset: int = 0) -> dict:
+        limit = validate_limit(limit)
+        offset = validate_offset(offset)
+        try:
+            results = self._sp.current_user_saved_tracks(limit=limit, offset=offset)
+            if results is None:
+                return {"tracks": [], "total": 0, "offset": offset, "limit": limit}
+            tracks = [
+                item["track"] for item in results.get("items", []) if item.get("track")
+            ]
+            return {
+                "tracks": format_track_list(tracks, include_album=True),
+                "total": results.get("total", 0),
+                "offset": offset,
+                "limit": limit,
+            }
+        except SpotifyException as e:
+            self._handle_error(e, "fetching saved tracks")
 
     # -- Playlists --
 
@@ -225,6 +283,14 @@ class SpotifyClient:
             self._sp.pause_playback()
         except SpotifyException as e:
             self._handle_error(e, "pausing playback")
+
+    def add_to_queue(self, track_uri: str) -> None:
+        track_id = extract_id(track_uri)
+        uri = f"spotify:track:{track_id}"
+        try:
+            self._sp.add_to_queue(uri)
+        except SpotifyException as e:
+            self._handle_error(e, "adding to queue")
 
     def get_now_playing(self) -> dict | None:
         try:

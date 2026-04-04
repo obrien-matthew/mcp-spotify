@@ -1,6 +1,6 @@
 # mcp-spotify
 
-MCP server for Spotify, focused on playlist building and music discovery. 12 granular tools designed for use with Claude and other LLM agents.
+MCP server for Spotify, focused on playlist building and music discovery. 17 granular tools designed for use with Claude and other LLM agents.
 
 ## Prerequisites
 
@@ -89,6 +89,15 @@ Or if running from a local clone:
 | Tool | Parameters | Description |
 |------|-----------|-------------|
 | `search_tracks` | `query`, `limit=20` | Search for tracks. Supports `genre:`, `year:`, `artist:` filters. |
+| `search_artists` | `query`, `limit=20` | Search for artists. Returns names, genres, and IDs. |
+| `search_albums` | `query`, `limit=20` | Search for albums. Returns names, artists, release dates, and IDs. |
+| `get_album_tracks` | `album_id`, `limit=50` | List all tracks on an album. |
+
+### Library
+
+| Tool | Parameters | Description |
+|------|-----------|-------------|
+| `get_saved_tracks` | `limit=20`, `offset=0` | Your liked/saved tracks, most recent first. |
 
 ### Playlists
 
@@ -116,6 +125,7 @@ Or if running from a local clone:
 |------|-----------|-------------|
 | `play_track` | `track_uri` | Play a track (requires active Spotify device). |
 | `pause_playback` | (none) | Pause playback. |
+| `add_to_queue` | `track_uri` | Add a track to the playback queue. |
 | `get_now_playing` | (none) | Get current track info. |
 
 ## OAuth Scopes
@@ -125,6 +135,7 @@ This server requests the minimum scopes needed:
 - `user-read-playback-state`, `user-modify-playback-state`, `user-read-currently-playing` -- playback
 - `playlist-read-private`, `playlist-read-collaborative`, `playlist-modify-public`, `playlist-modify-private` -- playlists
 - `user-top-read` -- personalization
+- `user-library-read` -- saved/liked tracks
 
 ## Spotify Web API Restrictions
 
@@ -183,17 +194,12 @@ Potential tools that could be added within current Development Mode access:
 | `skip_to_next` | `POST /me/player/next` | Skip to the next track in queue. |
 | `skip_to_previous` | `POST /me/player/previous` | Skip to the previous track. |
 | `get_queue` | `GET /me/player/queue` | View the current playback queue. |
-| `add_to_queue` | `POST /me/player/queue` | Add a track to the end of the queue. |
 | `set_volume` | `PUT /me/player/volume` | Set playback volume (Premium only). |
 | `set_repeat` | `PUT /me/player/repeat` | Set repeat mode (track/context/off). |
 | `set_shuffle` | `PUT /me/player/shuffle` | Toggle shuffle on/off. |
 | `get_devices` | `GET /me/player/devices` | List available playback devices. |
 | `transfer_playback` | `PUT /me/player` | Transfer playback to a different device. |
-| `get_album_tracks` | `GET /albums/{id}/tracks` | List tracks on an album. |
-| `search_artists` | `GET /search?type=artist` | Search for artists (currently only track search is implemented). |
-| `search_albums` | `GET /search?type=album` | Search for albums. |
 | `save_tracks` | `PUT /me/tracks` | Save tracks to the user's library. |
-| `get_saved_tracks` | `GET /me/tracks` | List the user's saved/liked tracks. |
 
 ### Will Never Be Usable (for New Apps)
 

@@ -42,6 +42,68 @@ def search_tracks(query: str, limit: int = 20) -> str:
         return f"Error: {e}"
 
 
+@mcp.tool()
+def search_artists(query: str, limit: int = 20) -> str:
+    """Search for artists on Spotify.
+
+    Supports the same query syntax as search_tracks. Returns artist names,
+    genres, and IDs. Useful for finding an artist ID to explore their catalog.
+    """
+    try:
+        results = _get_client().search_artists(query, limit)
+        return json.dumps(results, indent=2)
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
+def search_albums(query: str, limit: int = 20) -> str:
+    """Search for albums on Spotify.
+
+    Returns album names, artists, release dates, and IDs. Use get_album_tracks
+    to list the tracks on a found album.
+    """
+    try:
+        results = _get_client().search_albums(query, limit)
+        return json.dumps(results, indent=2)
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
+def get_album_tracks(album_id: str, limit: int = 50) -> str:
+    """Get all tracks on a Spotify album.
+
+    Accepts a Spotify album ID or full URI. Returns track names, artists,
+    and IDs. Useful for adding an entire album to a playlist.
+    """
+    try:
+        result = _get_client().get_album_tracks(album_id, limit)
+        return json.dumps(result, indent=2)
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+# ---------------------------------------------------------------------------
+# Library
+# ---------------------------------------------------------------------------
+
+
+@mcp.tool()
+def get_saved_tracks(limit: int = 20, offset: int = 0) -> str:
+    """Get the current user's saved (liked) tracks.
+
+    Returns tracks from the user's library, sorted by most recently saved.
+    Supports pagination via limit (max 50) and offset. A rich signal for
+    playlist building since liked songs reflect explicit user preference.
+    """
+    try:
+        result = _get_client().get_saved_tracks(limit, offset)
+        return json.dumps(result, indent=2)
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
 # ---------------------------------------------------------------------------
 # Playlists
 # ---------------------------------------------------------------------------
@@ -202,6 +264,19 @@ def pause_playback() -> str:
     try:
         _get_client().pause_playback()
         return "Playback paused."
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
+def add_to_queue(track_uri: str) -> str:
+    """Add a track to the end of the playback queue.
+
+    Requires an active Spotify device. Accepts a track URI or bare track ID.
+    """
+    try:
+        _get_client().add_to_queue(track_uri)
+        return "Track added to queue."
     except (SpotifyError, ValueError) as e:
         return f"Error: {e}"
 
