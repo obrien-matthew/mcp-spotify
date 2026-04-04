@@ -1,6 +1,6 @@
 # mcp-spotify
 
-MCP server for Spotify, focused on playlist building and music discovery. 17 granular tools designed for use with Claude and other LLM agents.
+MCP server for Spotify, focused on playlist building and music discovery. 19 granular tools designed for use with Claude and other LLM agents.
 
 ## Prerequisites
 
@@ -108,6 +108,8 @@ Or if running from a local clone:
 | `remove_tracks_from_playlist` | `playlist_id`, `track_ids` | Remove tracks from a playlist. |
 | `get_playlist_tracks` | `playlist_id`, `limit=50`, `offset=0` | List tracks in a playlist. |
 | `replace_playlist_tracks` | `playlist_id`, `track_ids` | Replace all tracks in a playlist (for reordering). |
+| `follow_playlist` | `playlist_id` | Follow (save) a playlist to your library. |
+| `unfollow_playlist` | `playlist_id` | Unfollow (remove/delete) a playlist from your library. |
 | `get_my_playlists` | `limit=50` | List your playlists. |
 
 ### Personalization

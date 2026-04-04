@@ -172,6 +172,35 @@ def replace_playlist_tracks(playlist_id: str, track_ids: list[str]) -> str:
 
 
 @mcp.tool()
+def follow_playlist(playlist_id: str) -> str:
+    """Follow (save) a Spotify playlist to your library.
+
+    Accepts a playlist ID or URI. Use this to save playlists found via
+    search or shared by others.
+    """
+    try:
+        _get_client().follow_playlist(playlist_id)
+        return "Playlist followed."
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
+def unfollow_playlist(playlist_id: str) -> str:
+    """Unfollow (remove) a Spotify playlist from your library.
+
+    For playlists you own, this is the only way to 'delete' them --
+    Spotify has no true delete. The playlist will no longer appear in
+    your library or profile.
+    """
+    try:
+        _get_client().unfollow_playlist(playlist_id)
+        return "Playlist unfollowed."
+    except (SpotifyError, ValueError) as e:
+        return f"Error: {e}"
+
+
+@mcp.tool()
 def get_playlist_tracks(playlist_id: str, limit: int = 50, offset: int = 0) -> str:
     """Get the tracks in a Spotify playlist.
 

@@ -258,6 +258,40 @@ class TestReplacePlaylistTracks:
         mock_sp.playlist_add_items.assert_called_once()
 
 
+class TestFollowPlaylist:
+    def test_calls_spotipy(self, client):
+        c, mock_sp = client
+        c.follow_playlist("37i9dQZF1DXcBWIGoYBM5M")
+        mock_sp.current_user_follow_playlist.assert_called_once_with(
+            "37i9dQZF1DXcBWIGoYBM5M"
+        )
+
+    def test_raises_on_api_error(self, client):
+        c, mock_sp = client
+        mock_sp.current_user_follow_playlist.side_effect = SpotifyException(
+            404, "", msg="not found"
+        )
+        with pytest.raises(SpotifyError, match="Not found"):
+            c.follow_playlist("37i9dQZF1DXcBWIGoYBM5M")
+
+
+class TestUnfollowPlaylist:
+    def test_calls_spotipy(self, client):
+        c, mock_sp = client
+        c.unfollow_playlist("37i9dQZF1DXcBWIGoYBM5M")
+        mock_sp.current_user_unfollow_playlist.assert_called_once_with(
+            "37i9dQZF1DXcBWIGoYBM5M"
+        )
+
+    def test_raises_on_api_error(self, client):
+        c, mock_sp = client
+        mock_sp.current_user_unfollow_playlist.side_effect = SpotifyException(
+            403, "", msg="forbidden"
+        )
+        with pytest.raises(SpotifyError, match="Permission denied"):
+            c.unfollow_playlist("37i9dQZF1DXcBWIGoYBM5M")
+
+
 class TestGetPlaylistTracks:
     def test_returns_tracks_with_pagination(self, client):
         c, mock_sp = client

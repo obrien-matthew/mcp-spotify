@@ -218,6 +218,20 @@ class SpotifyClient:
         except SpotifyException as e:
             self._handle_error(e, "fetching playlist tracks")
 
+    def follow_playlist(self, playlist_id: str) -> None:
+        playlist_id = extract_id(playlist_id)
+        try:
+            self._sp.current_user_follow_playlist(playlist_id)
+        except SpotifyException as e:
+            self._handle_error(e, "following playlist")
+
+    def unfollow_playlist(self, playlist_id: str) -> None:
+        playlist_id = extract_id(playlist_id)
+        try:
+            self._sp.current_user_unfollow_playlist(playlist_id)
+        except SpotifyException as e:
+            self._handle_error(e, "unfollowing playlist")
+
     def get_my_playlists(self, limit: int = 50) -> list[dict]:
         limit = validate_limit(limit)
         try:
