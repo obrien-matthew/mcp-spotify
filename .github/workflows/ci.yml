@@ -28,3 +28,6 @@ jobs:
 
       - name: Pyright
         run: uv run pyright src/
+
+      - name: Tests
+        run: uv run pytest tests/ -v

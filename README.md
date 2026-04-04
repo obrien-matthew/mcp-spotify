@@ -219,6 +219,7 @@ The practical effect: playlist building relies entirely on `search_tracks` and t
 
 ```bash
 uv run mcp-spotify           # Run the server
+uv run pytest tests/ -v      # Run tests
 uv run ruff check src/       # Lint
 uv run ruff format src/      # Format
 uv run pyright src/          # Type check
