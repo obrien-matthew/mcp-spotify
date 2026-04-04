@@ -21,13 +21,26 @@ jobs:
       - run: uv sync --frozen
 
       - name: Ruff lint
-        run: uv run ruff check src/
+        run: uv run ruff check src/ tests/
 
       - name: Ruff format
-        run: uv run ruff format --check src/
+        run: uv run ruff format --check src/ tests/
 
       - name: Pyright
         run: uv run pyright src/
 
-      - name: Tests
-        run: uv run pytest tests/ -v
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - run: uv python install 3.14
+
+      - run: uv sync --frozen
+
+      - name: Run tests
+        run: uv run pytest tests/ --cov=spotify_mcp --cov-report=term-missing --cov-fail-under=65

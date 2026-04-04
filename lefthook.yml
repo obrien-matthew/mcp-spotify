@@ -10,3 +10,8 @@ pre-commit:
     pyright:
       glob: "*.py"
       run: uv run pyright {staged_files}
+
+pre-push:
+  commands:
+    test:
+      run: uv run pytest tests/ -x -q

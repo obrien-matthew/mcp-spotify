@@ -16,8 +16,15 @@ dist/
 .env
 .spotify_cache
 
+# Test / coverage
+.coverage
+htmlcov/
+
 # Claude Code
 .claude/
+
+# Plans (local working docs)
+docs/plans/
 
 # OS
 .DS_Store

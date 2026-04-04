@@ -37,6 +37,7 @@ dev = [
     "ruff>=0.11.0",
     "pyright>=1.1.400",
     "pytest>=8.0",
+    "pytest-cov>=6.0",
 ]
 
 [tool.ruff]
@@ -45,6 +46,13 @@ line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["spotify_mcp"]
+omit = ["src/spotify_mcp/auth.py"]
 
 [tool.pyright]
 pythonVersion = "3.14"
