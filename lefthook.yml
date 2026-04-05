@@ -15,3 +15,5 @@ pre-push:
   commands:
     test:
       run: uv run pytest tests/ -x -q
+    check-version-bump:
+      run: bash scripts/check-version-bump.sh
