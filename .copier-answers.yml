@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+_commit: v0.1.0
+_src_path: gh:obrien-matthew/mcp-template
+author_email: obrien.mlotwis@gmail.com
+author_name: Matthew O'Brien
+coverage_threshold: 50
+github_org: obrien-matthew
+package_name: mcp-spotify
+service_dependency: spotipy>=2.24.0
+service_name: Spotify
+service_slug: spotify
+topic_classifier: "Topic :: Multimedia :: Sound/Audio"
