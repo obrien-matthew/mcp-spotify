@@ -1,6 +1,7 @@
 """Tests for MCP server tool functions with mocked SpotifyClient."""
 
 import json
+from importlib.metadata import version
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -368,3 +369,11 @@ class TestGetNowPlayingTool:
     def test_error_handling(self, mock_client):
         mock_client.get_now_playing.side_effect = SpotifyError("API error")
         assert server.get_now_playing() == "Error: API error"
+
+
+# -- Diagnostics --
+
+
+class TestGetServerVersionTool:
+    def test_returns_installed_version(self):
+        assert server.get_server_version() == version("mcp-spotify")

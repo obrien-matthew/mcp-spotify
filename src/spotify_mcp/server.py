@@ -1,12 +1,23 @@
 """MCP server with Spotify tools for playlist building and playback."""
 
 import json
+from importlib.metadata import PackageNotFoundError, version
 
 from mcp.server.fastmcp import FastMCP
 
 from .client import SpotifyClient, SpotifyError
 
 mcp = FastMCP("mcp-spotify")
+
+
+@mcp.tool()
+def get_server_version() -> str:
+    """Return the installed version of the mcp-spotify server."""
+    try:
+        return version("mcp-spotify")
+    except PackageNotFoundError:
+        return "unknown"
+
 
 _client: SpotifyClient | None = None
 
