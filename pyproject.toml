@@ -1,6 +1,6 @@
 [project]
 name = "mcp-spotify"
-version = "0.1.8"
+version = "0.2.0"
 description = "MCP server for Spotify playlist building and playback control"
 readme = "README.md"
 license = "MIT"

@@ -1,6 +1,13 @@
-"""MCP server with Spotify tools for playlist building and playback."""
+"""MCP server with Spotify tools for playlist building and playback.
 
-import json
+Tool return-type conventions:
+- Data tools return real `dict` or `list[dict]` so FastMCP serializes them as
+  proper structured content (no json.dumps wrapping).
+- Action/status tools return human-readable `str` confirmations.
+- Errors are raised as exceptions; FastMCP translates them into MCP error
+  responses with `isError=true`.
+"""
+
 from importlib.metadata import PackageNotFoundError, version
 
 from mcp.server.fastmcp import FastMCP
@@ -35,7 +42,7 @@ def _get_client() -> SpotifyClient:
 
 
 @mcp.tool()
-def search_tracks(query: str, limit: int = 20) -> str:
+def search_tracks(query: str, limit: int = 20) -> list[dict]:
     """Search for tracks on Spotify.
 
     Supports Spotify query syntax for filtering:
@@ -46,53 +53,37 @@ def search_tracks(query: str, limit: int = 20) -> str:
 
     Returns track names, artists, albums, and IDs.
     """
-    try:
-        results = _get_client().search_tracks(query, limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().search_tracks(query, limit)
 
 
 @mcp.tool()
-def search_artists(query: str, limit: int = 20) -> str:
+def search_artists(query: str, limit: int = 20) -> list[dict]:
     """Search for artists on Spotify.
 
     Supports the same query syntax as search_tracks. Returns artist names,
     genres, and IDs. Useful for finding an artist ID to explore their catalog.
     """
-    try:
-        results = _get_client().search_artists(query, limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().search_artists(query, limit)
 
 
 @mcp.tool()
-def search_albums(query: str, limit: int = 20) -> str:
+def search_albums(query: str, limit: int = 20) -> list[dict]:
     """Search for albums on Spotify.
 
     Returns album names, artists, release dates, and IDs. Use get_album_tracks
     to list the tracks on a found album.
     """
-    try:
-        results = _get_client().search_albums(query, limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().search_albums(query, limit)
 
 
 @mcp.tool()
-def get_album_tracks(album_id: str, limit: int = 50) -> str:
+def get_album_tracks(album_id: str, limit: int = 50) -> dict:
     """Get all tracks on a Spotify album.
 
     Accepts a Spotify album ID or full URI. Returns track names, artists,
     and IDs. Useful for adding an entire album to a playlist.
     """
-    try:
-        result = _get_client().get_album_tracks(album_id, limit)
-        return json.dumps(result, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_album_tracks(album_id, limit)
 
 
 # ---------------------------------------------------------------------------
@@ -101,18 +92,14 @@ def get_album_tracks(album_id: str, limit: int = 50) -> str:
 
 
 @mcp.tool()
-def get_saved_tracks(limit: int = 20, offset: int = 0) -> str:
+def get_saved_tracks(limit: int = 20, offset: int = 0) -> dict:
     """Get the current user's saved (liked) tracks.
 
     Returns tracks from the user's library, sorted by most recently saved.
     Supports pagination via limit (max 50) and offset. A rich signal for
     playlist building since liked songs reflect explicit user preference.
     """
-    try:
-        result = _get_client().get_saved_tracks(limit, offset)
-        return json.dumps(result, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_saved_tracks(limit, offset)
 
 
 # ---------------------------------------------------------------------------
@@ -121,16 +108,12 @@ def get_saved_tracks(limit: int = 20, offset: int = 0) -> str:
 
 
 @mcp.tool()
-def create_playlist(name: str, description: str = "", public: bool = True) -> str:
+def create_playlist(name: str, description: str = "", public: bool = True) -> dict:
     """Create a new Spotify playlist for the current user.
 
     Returns the playlist ID and URI for use with other playlist tools.
     """
-    try:
-        result = _get_client().create_playlist(name, description, public)
-        return json.dumps(result, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().create_playlist(name, description, public)
 
 
 @mcp.tool()
@@ -212,30 +195,22 @@ def unfollow_playlist(playlist_id: str) -> str:
 
 
 @mcp.tool()
-def get_playlist_tracks(playlist_id: str, limit: int = 50, offset: int = 0) -> str:
+def get_playlist_tracks(playlist_id: str, limit: int = 50, offset: int = 0) -> dict:
     """Get the tracks in a Spotify playlist.
 
     Supports pagination via limit (max 100) and offset. Returns track
     names, artists, IDs, and total count.
     """
-    try:
-        result = _get_client().get_playlist_tracks(playlist_id, limit, offset)
-        return json.dumps(result, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_playlist_tracks(playlist_id, limit, offset)
 
 
 @mcp.tool()
-def get_my_playlists(limit: int = 50) -> str:
+def get_my_playlists(limit: int = 50) -> list[dict]:
     """List the current user's Spotify playlists.
 
     Returns playlist names, IDs, track counts, and ownership info.
     """
-    try:
-        results = _get_client().get_my_playlists(limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_my_playlists(limit)
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +219,7 @@ def get_my_playlists(limit: int = 50) -> str:
 
 
 @mcp.tool()
-def get_my_top_tracks(time_range: str = "medium_term", limit: int = 20) -> str:
+def get_my_top_tracks(time_range: str = "medium_term", limit: int = 20) -> list[dict]:
     """Get the current user's top tracks on Spotify.
 
     time_range options:
@@ -254,15 +229,11 @@ def get_my_top_tracks(time_range: str = "medium_term", limit: int = 20) -> str:
 
     Useful as a seed for building personalized playlists.
     """
-    try:
-        results = _get_client().get_my_top_tracks(time_range, limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_my_top_tracks(time_range, limit)
 
 
 @mcp.tool()
-def get_my_top_artists(time_range: str = "medium_term", limit: int = 20) -> str:
+def get_my_top_artists(time_range: str = "medium_term", limit: int = 20) -> list[dict]:
     """Get the current user's top artists on Spotify.
 
     time_range options:
@@ -272,11 +243,7 @@ def get_my_top_artists(time_range: str = "medium_term", limit: int = 20) -> str:
 
     Useful for discovering related artists when building playlists.
     """
-    try:
-        results = _get_client().get_my_top_artists(time_range, limit)
-        return json.dumps(results, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    return _get_client().get_my_top_artists(time_range, limit)
 
 
 # ---------------------------------------------------------------------------
@@ -322,16 +289,13 @@ def add_to_queue(track_uri: str) -> str:
 
 
 @mcp.tool()
-def get_now_playing() -> str:
+def get_now_playing() -> dict:
     """Get information about the currently playing track on Spotify.
 
     Returns track name, artist, album, progress, and playback state.
-    Returns a message if nothing is currently playing.
+    Returns `{"is_playing": False}` if nothing is currently playing.
     """
-    try:
-        result = _get_client().get_now_playing()
-        if result is None:
-            return "Nothing is currently playing."
-        return json.dumps(result, indent=2)
-    except (SpotifyError, ValueError) as e:
-        return f"Error: {e}"
+    result = _get_client().get_now_playing()
+    if result is None:
+        return {"is_playing": False}
+    return result
