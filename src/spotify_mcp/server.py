@@ -9,6 +9,7 @@ Tool return-type conventions:
 """
 
 from importlib.metadata import PackageNotFoundError, version
+from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
@@ -77,7 +78,7 @@ def search_albums(query: str, limit: int = 20) -> list[dict]:
 
 
 @mcp.tool()
-def get_album_tracks(album_id: str, limit: int = 50) -> dict:
+def get_album_tracks(album_id: str, limit: int = 50) -> dict[str, Any]:
     """Get all tracks on a Spotify album.
 
     Accepts a Spotify album ID or full URI. Returns track names, artists,
@@ -92,7 +93,7 @@ def get_album_tracks(album_id: str, limit: int = 50) -> dict:
 
 
 @mcp.tool()
-def get_saved_tracks(limit: int = 20, offset: int = 0) -> dict:
+def get_saved_tracks(limit: int = 20, offset: int = 0) -> dict[str, Any]:
     """Get the current user's saved (liked) tracks.
 
     Returns tracks from the user's library, sorted by most recently saved.
@@ -108,7 +109,9 @@ def get_saved_tracks(limit: int = 20, offset: int = 0) -> dict:
 
 
 @mcp.tool()
-def create_playlist(name: str, description: str = "", public: bool = True) -> dict:
+def create_playlist(
+    name: str, description: str = "", public: bool = True
+) -> dict[str, Any]:
     """Create a new Spotify playlist for the current user.
 
     Returns the playlist ID and URI for use with other playlist tools.
@@ -195,7 +198,9 @@ def unfollow_playlist(playlist_id: str) -> str:
 
 
 @mcp.tool()
-def get_playlist_tracks(playlist_id: str, limit: int = 50, offset: int = 0) -> dict:
+def get_playlist_tracks(
+    playlist_id: str, limit: int = 50, offset: int = 0
+) -> dict[str, Any]:
     """Get the tracks in a Spotify playlist.
 
     Supports pagination via limit (max 100) and offset. Returns track
@@ -289,7 +294,7 @@ def add_to_queue(track_uri: str) -> str:
 
 
 @mcp.tool()
-def get_now_playing() -> dict:
+def get_now_playing() -> dict[str, Any]:
     """Get information about the currently playing track on Spotify.
 
     Returns track name, artist, album, progress, and playback state.
